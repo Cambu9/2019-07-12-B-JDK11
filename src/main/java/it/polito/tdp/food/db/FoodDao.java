@@ -12,36 +12,36 @@ import it.polito.tdp.food.model.Food;
 import it.polito.tdp.food.model.Portion;
 
 public class FoodDao {
-	public List<Food> listAllFoods(){
-		String sql = "SELECT * FROM food" ;
-		try {
-			Connection conn = DBConnect.getConnection() ;
-
-			PreparedStatement st = conn.prepareStatement(sql) ;
-			
-			List<Food> list = new ArrayList<>() ;
-			
-			ResultSet res = st.executeQuery() ;
-			
-			while(res.next()) {
-				try {
-					list.add(new Food(res.getInt("food_code"),
-							res.getString("display_name")
-							));
-				} catch (Throwable t) {
-					t.printStackTrace();
-				}
-			}
-			
-			conn.close();
-			return list ;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null ;
-		}
-
-	}
+//	public List<Food> listAllFoods(){
+//		String sql = "SELECT * FROM food" ;
+//		try {
+//			Connection conn = DBConnect.getConnection() ;
+//
+//			PreparedStatement st = conn.prepareStatement(sql) ;
+//			
+//			List<Food> list = new ArrayList<>() ;
+//			
+//			ResultSet res = st.executeQuery() ;
+//			
+//			while(res.next()) {
+//				try {
+//					list.add(new Food(res.getInt("food_code"),
+//							res.getString("display_name"),
+//							));
+//				} catch (Throwable t) {
+//					t.printStackTrace();
+//				}
+//			}
+//			
+//			conn.close();
+//			return list ;
+//
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return null ;
+//		}
+//
+//	}
 	
 	public List<Condiment> listAllCondiments(){
 		String sql = "SELECT * FROM condiment" ;
@@ -75,8 +75,9 @@ public class FoodDao {
 		}
 	}
 	
+
 	public List<Portion> listAllPortions(){
-		String sql = "SELECT * FROM portion" ;
+		String sql = "SELECT * FROM food_pyramid_mod.portion" ;
 		try {
 			Connection conn = DBConnect.getConnection() ;
 
@@ -109,4 +110,43 @@ public class FoodDao {
 		}
 
 	}
+	
+	public List<Food> getVertici(int n){
+		
+		String sql = "SELECT f.food_code as id, f.display_name as nome,avg(p.saturated_fats) as peso "
+				+ "		FROM food f, food_pyramid_mod.portion p "
+				+ "		WHERE f.food_code = p.food_code "
+				+ "		GROUP BY f.food_code "
+				+ "		HAVING COUNT(*)>= ?" ;
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, n);
+			
+			List<Food> list = new ArrayList<>() ;
+			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				try {
+					list.add(new Food(res.getInt("id"),
+							res.getString("nome"),
+							res.getDouble("peso")
+							));
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
+			
+			conn.close();
+			return list;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null ;
+		}
+
+	}
+	
 }

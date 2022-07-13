@@ -1,15 +1,30 @@
 package it.polito.tdp.food.model;
 
+import java.util.Objects;
+
 public class Food {
 	private Integer food_code;
 	private String display_name;
+	private Double peso;
 	
-	public Food(Integer food_code, String display_name) {
+	public Food(Integer food_code, String display_name, Double peso) {
 		super();
 		this.food_code = food_code;
 		this.display_name = display_name;
+		this.peso = peso;
 	}
 	
+	
+	public Double getPeso() {
+		return peso;
+	}
+
+
+	public void setPeso(Double peso) {
+		this.peso = peso;
+	}
+
+
 	public Integer getFood_code() {
 		return food_code;
 	}
@@ -25,11 +40,10 @@ public class Food {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((food_code == null) ? 0 : food_code.hashCode());
-		return result;
+		return Objects.hash(display_name, food_code, peso);
 	}
+
+	
 
 	@Override
 	public boolean equals(Object obj) {
@@ -40,13 +54,10 @@ public class Food {
 		if (getClass() != obj.getClass())
 			return false;
 		Food other = (Food) obj;
-		if (food_code == null) {
-			if (other.food_code != null)
-				return false;
-		} else if (!food_code.equals(other.food_code))
-			return false;
-		return true;
+		return Objects.equals(display_name, other.display_name) && Objects.equals(food_code, other.food_code)
+				&& Objects.equals(peso, other.peso);
 	}
+
 
 	@Override
 	public String toString() {
